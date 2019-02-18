@@ -5,9 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.magicpocketv1.Bean.AccountBean;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -20,7 +22,7 @@ public class AccountDataBaseHelper extends SQLiteOpenHelper {
             + "id integer primary key autoincrement,"
             + "uuid text,"
             + "type integer,"
-            + "category integer,"
+            + "category text,"
             + "remark text,"
             + "money double,"
             + "date date )";
@@ -51,6 +53,8 @@ public class AccountDataBaseHelper extends SQLiteOpenHelper {
         values.put("money",bean.getMoney());
         values.put("date",bean.getDate());
         db.insert(DB_NAME,null,values);
+        values.clear();
+        Log.d("tag","uuid+"+bean.getUuid());
     }
 
     //删除
@@ -67,7 +71,7 @@ public class AccountDataBaseHelper extends SQLiteOpenHelper {
     }
 
     //根据日期查询数据
-    public LinkedList<AccountBean> loacteRecord(String dateInfo){
+    public LinkedList<AccountBean> locateRecord(String dateInfo){
         LinkedList<AccountBean> answer = new LinkedList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor;
@@ -77,10 +81,10 @@ public class AccountDataBaseHelper extends SQLiteOpenHelper {
             do {
                 String uuid  = cursor.getString(cursor.getColumnIndex("uuid"));
                 int type = cursor.getInt(cursor.getColumnIndex("type"));
-                Integer category = cursor.getInt(cursor.getColumnIndex("category"));
+                String category = cursor.getString(cursor.getColumnIndex("category"));
                 String remark  = cursor.getString(cursor.getColumnIndex("remark"));
                 double money = cursor.getDouble(cursor.getColumnIndex("money"));
-                String date = cursor.getString(cursor.getColumnIndex("data"));
+                String date = cursor.getString(cursor.getColumnIndex("date"));
 
                 AccountBean temp = new AccountBean();
                 temp.setUuid(uuid);
@@ -99,7 +103,7 @@ public class AccountDataBaseHelper extends SQLiteOpenHelper {
     }
 
     //查询之前的数据日期
-    LinkedList<String> CountDate(){
+    public LinkedList<String> CountDate(){
         LinkedList<String> dates = new LinkedList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("select DISTINCT * from Account order by date asc",new String[]{});
@@ -114,5 +118,34 @@ public class AccountDataBaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return dates;
     }
+
+    public ArrayList<LinkedList<AccountBean>> getWeekDate(){
+        ArrayList<LinkedList<AccountBean>> ans = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select DISTINCT date from Account order by date desc limit 7",new String[]{});
+        if(cursor.moveToLast()){
+            do {
+                String date = cursor.getString(cursor.getColumnIndex("date"));
+                LinkedList<AccountBean> accountBeans = locateRecord(date);
+                ans.add(accountBeans);
+            }while(cursor.moveToPrevious());
+        }
+        cursor.close();
+        return ans;
+    }
+    public ArrayList<String> getSevenDate(){
+        ArrayList<String> ans = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select DISTINCT date from Account order by date desc limit 7",new String[]{});
+        if(cursor.moveToLast()){
+            do {
+                String date = cursor.getString(cursor.getColumnIndex("date"));
+                ans.add(date);
+            }while(cursor.moveToPrevious());
+        }
+        cursor.close();
+        return ans;
+    }
+
 
 }

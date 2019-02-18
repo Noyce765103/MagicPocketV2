@@ -2,6 +2,7 @@ package com.example.magicpocketv1.Bean;
 
 import com.example.magicpocketv1.Utils.DateUtil;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -12,15 +13,15 @@ import java.util.UUID;
  * 备注(remark) String
  * 日起(date) String
  */
-public class AccountBean {
+public class AccountBean implements Serializable {
 
-    private enum Type{
+    public enum Type{
         MONEY_TYPE_OUTCOME,MONEY_TYPE_INCOME
     }
 
     private double money;
     private Type money_type;
-    private Integer category;
+    private String category;
     private String remark;
     private String date; //20xx-xx-xx
 
@@ -54,11 +55,11 @@ public class AccountBean {
             this.money_type = Type.MONEY_TYPE_INCOME;
     }
 
-    public Integer getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Integer category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 

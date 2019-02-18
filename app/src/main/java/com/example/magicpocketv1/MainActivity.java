@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.magicpocketv1.Adapter.BottomAdapter;
+import com.example.magicpocketv1.Utils.GlobalUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +22,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setElevation(0);
+        GlobalUtil.getInstance().setmContext(getApplicationContext());
+        GlobalUtil.getInstance().activity = this;
         initViews();
+
 
     }
 
@@ -69,12 +74,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //让Viewpager不可滑动
-        viewPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+
+
 
 
     }
