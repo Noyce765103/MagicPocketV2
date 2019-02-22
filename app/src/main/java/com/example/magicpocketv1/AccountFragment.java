@@ -81,6 +81,7 @@ public class AccountFragment extends Fragment implements ViewPager.OnPageChangeL
         super.onActivityResult(requestCode, resultCode, data);
 
         viewpagerAdapter.reload();
+        Log.d("回调","11123232323231");
         updateHeader();
 
     }
